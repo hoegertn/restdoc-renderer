@@ -52,16 +52,17 @@ function createResourceSection(data) {
 }
 
 function createResource(res) {
+	var desc = res.description ? res.description : 'No description';
+	
 	var html = '<div class="accordion-group">';
 	html += '<div class="accordion-heading">';
 	html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-res" href="#collapse' + res.id + '">';
-	html += '<h4>' + res.path + ': ' + res.id + ' <i class="icon-resize-vertical icon-4x"></i></h4></a></div>\n';
+	html += '<h4>' + res.path + ': ' + desc + ' <i class="icon-resize-vertical icon-4x"></i></h4></a></div>\n';
 	
 	html += '<div id="collapse' + res.id + '" class="accordion-body collapse"><div class="accordion-inner">';
 	
-	var desc = res.description ? res.description : 'No description';
-	html += '<h5>Description</h5>';
-	html += '<p>' + desc + '</p>';
+	html += '<h5>Identifier</h5>';
+	html += '<p>' + res.id + '</p>';
 	
 	html += '<h5>Parameters</h5>';
 	html += createParamSection(res.params);
