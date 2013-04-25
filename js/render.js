@@ -1,20 +1,60 @@
-
-function render(fname) {
+/**
+ * @param file Path to the json file (e.g. test.json or http://domain.de/test.json
+ * @param cbBefore function(restdoc) executed before rendering happens (can be undefined)
+ * @param contentElement element where the content is inserted (e. g. $("#test"))
+ * @param cbAfter function(restdoc) executed after rendering happened (can be undefined)
+ */
+function render(file, cbBefore, contentElement, cbAfter) {
 	$.ajax({
-		url : fname,
-		success : function (data) {
-			var html = '';
-			
-			html += createHeaderSection(data.headers);
-			html += createResourceSection(data.resources);
-
-			document.getElementById("zone").innerHTML = html;
+		url : file,
+		success : function (restdoc) {
+			if (typeof cbBefore === "function") {
+				cbBefore(restdoc);
+			}
+			var output = "";
+			output += createHeaderSection(restdoc.headers);
+			output += createResourceSection(restdoc.resources);
+			contentElement.html(output);
+			if (typeof cbAfter === "function") {
+				cbAfter(restdoc);
+			}
 		},
-		error : function () {
-			document.getElementById("zone").innerHTML = 'Error loading RestDoc';
+		error : function (e) {
+			contentElement.html("Error loading RestDoc: " + e);
 		},
-		dataType : 'json'
+		dataType : "json"
 	});
+}
+
+function crateSchemaList(restdoc, appendElement) {
+	var output = "";
+	var i = 0;
+	for (var id in restdoc.schemas) {
+		if (restdoc.schemas.hasOwnProperty(id)) {
+			var schema = restdoc.schemas[id];
+			output += "<li><a href=\"#schema-" + i +"\">" + id + "</a></li>";
+			i += 1;
+		}
+	}
+	appendElement.append(output);
+}
+
+function crateResourceList(restdoc, appendElement) {
+	var output = Mustache.render("{{#resources}}<li><a href=\"#resource-{{id}}\" data-toggle=\"collapse\" data-parent=\"#accordion-res\">{{path}}</a></li>{{/resources}}", restdoc);
+	appendElement.append(output);
+}
+
+function crateParamList(restdoc, appendElement) {
+	var output = "";
+	var i = 0;
+	for (var id in restdoc.params) {
+		if (restdoc.params.hasOwnProperty(id)) {
+			var param = restdoc.params[id];
+			output += "<li><a href=\"#param-" + i +"\">" + id + "</a></li>";
+			i += 1;
+		}
+	}
+	appendElement.append(output);
 }
 
 function createHeaderSection(headers) {
@@ -56,10 +96,10 @@ function createResource(res) {
 	
 	var html = '<div class="accordion-group">';
 	html += '<div class="accordion-heading">';
-	html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-res" href="#collapse' + res.id + '">';
+	html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-res" href="#resource-' + res.id + '">';
 	html += '<h4>' + res.path + ': ' + desc + ' <i class="icon-resize-vertical icon-4x"></i></h4></a></div>\n';
 	
-	html += '<div id="collapse' + res.id + '" class="accordion-body collapse"><div class="accordion-inner">';
+	html += '<div id="resource-' + res.id + '" class="accordion-body collapse"><div class="accordion-inner">';
 	
 	html += '<h5>Identifier</h5>';
 	html += '<p>' + res.id + '</p>';
