@@ -12,6 +12,7 @@ function render(file, cbBefore, contentElement, cbAfter) {
 				cbBefore(restdoc);
 			}
 			var output = "";
+			output += createSchemaSection(restdoc.schemas);
 			output += createHeaderSection(restdoc.headers);
 			output += createResourceSection(restdoc.resources);
 			contentElement.html(output);
@@ -57,10 +58,56 @@ function crateParamList(restdoc, appendElement) {
 	appendElement.append(output);
 }
 
+function createSchemaSection(schemas) {
+	var html = '<h2>Schemas</h2><div class="accordion" id="accordion-res">';
+	var i = 0;
+	for (var id in schemas) {
+		if (schemas.hasOwnProperty(id)) {
+			html += createSchema(i, id, schemas[id]);
+			i += 1;
+		}
+	}
+	html += '</div>';
+	return html;
+}
+
+function createSchema(i, schemaURI, schema) {
+	var html = '<div class="accordion-group">'
+		+ '<div class="accordion-heading">'
+			+ '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-res" href="#schema-' + i + '">'
+			+ '<h4>' + schemaURI + ' <i class="icon-resize-vertical icon-4x"></i></h4>'
+			+ '</a>'
+		+ '</div>';
+
+	html += '<div id="schema-' + i + '" class="accordion-body collapse"><div class="accordion-inner">';
+	if (schema.type === "url") {
+		html += '<h5>URL</h5>';
+		html += '<p>' + schema.url + '</p>';
+	} else if (schema.type === "inline") {
+		html += '<h5>Type</h5>';
+		html += '<p>' + schema.schema.type + '</p>';
+		html += '<h5>Properties</h5><ul>';
+		for (var id in schema.schema.properties) {
+			if (schema.schema.properties.hasOwnProperty(id)) {
+				var property = schema.schema.properties[id];
+				html += "<li><code>" + id + "</code>: " + property.type + "</li>"
+			}
+		}
+		html += "</ul>";
+	 // TODO
+	} else {
+		html += "<p>Unsupported type " + schema.type + "</p>";
+	}
+	html += '</div></div></div>';
+	return html;
+}
+
 function createHeaderSection(headers) {
 	var html = '<div class="restdoc-headers" id="headers">\n';
 	html += '<h2>Global headers</h2>\n';
+	html += '<a name="header-request"></a>';
 	html += createHeaderList('h3', 'Request', headers.request);
+	html += '<a name="header-response"></a>';
 	html += createHeaderList('h3', 'Response', headers.response);	
 	html += '</div>';
 	return html;
