@@ -1,16 +1,27 @@
 <!DOCTYPE html>
-<HTML><head>
-<META http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link href="css/bootstrap.css" rel="stylesheet">
-<script src="js/jquery.min.js" type="text/javascript"></script>
-<script src="js/bootstrap.js" type="text/javascript"></script>
-<script src="js/render.js" type="text/javascript"></script>
-<title>RestDoc Rendering Demo</title>
-</head>
-<body bgcolor="#ffffff" onLoad="(render('test.json'));">
-<a class="btn btn-success" onClick="(render('test.json'));">Show</a>
-<br/>
-<div id="zone">
-<h1>loading ...</h1>
-</div>
-</body></HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
+		<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
+		<title>RestDoc Rendering Demo</title>
+	</head>
+	<body>
+		<div id="rendered">
+			<h1>loading ...</h1>
+		</div>
+
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap-collapse.js"></script>
+		<script src="js/render.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			$(function() {
+				render("test.json", undefined, $("#rendered"), undefined);
+			});
+		</script>
+	</body>
+</html>
+
