@@ -1,30 +1,50 @@
 function crateSchemaList(restdoc, appendElement) {
-	var output = "";
-	var i = 0;
+	var output = "", i = 0, schemas = [];
 	for (var id in restdoc.schemas) {
 		if (restdoc.schemas.hasOwnProperty(id)) {
 			var s = id.split("/");
-			output += "<li><a href=\"#schema-" + i +"-anchor\">" + s[s.length-1] + "</a></li>";
+			schemas.push({"id": i, "name": s[s.length-1]});
 			i += 1;
 		}
 	}
+	schemas.sort(function(a, b) {
+		return a.name.localeCompare(b.name);
+	});
+	$.each(schemas, function(i, schema) {
+		output += "<li><a href=\"#schema-" + schema.id +"-anchor\">" + schema.name + "</a></li>";
+	});
 	appendElement.after(output);
 }
 
 function crateResourceList(restdoc, appendElement) {
-	var output = Mustache.render("{{#resources}}<li><a href=\"#resource-{{id}}-anchor\">{{path}}</a></li>{{/resources}}", restdoc);
+	var output = "", resources = [];
+	$.each(restdoc.resources, function(i, resource) {
+			resources.push({"id": resource.id, "name": resource.path});
+	});
+	resources.sort(function(a, b) {
+		return a.name.localeCompare(b.name);
+	});
+	$.each(resources, function(i, resource) {
+		output += "<li><a href=\"#resources-" + resource.id +"-anchor\">" + resource.name + "</a></li>";
+	});
 	appendElement.after(output);
 }
 
 function crateParamList(restdoc, appendElement) {
-	var output = "";
-	var i = 0;
+	var output = "", i = 0, params = [];
 	for (var id in restdoc.params) {
 		if (restdoc.params.hasOwnProperty(id)) {
-			output += "<li><a href=\"#param-" + i +"-anchor\">" + id + "</a></li>";
+			params.push({"id": i, "name": id});
+
 			i += 1;
 		}
 	}
+	params.sort(function(a, b) {
+		return a.name.localeCompare(b.name);
+	});
+	$.each(params, function(i, param) {
+		output += "<li><a href=\"#param-" + param.id +"-anchor\">" + param.name + "</a></li>";
+	});
 	appendElement.after(output);
 }
 
@@ -133,7 +153,7 @@ function createResourceSection(data) {
 function createResource(res) {
 	var desc = res.description ? res.description : 'No description';
 	
-	var html = '<div class="accordion-group" id="resource-' + res.id + '-anchor">';
+	var html = '<div class="accordion-group" id="resources-' + res.id + '-anchor">';
 	html += '<div class="accordion-heading">';
 	html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-res" href="#resource-' + res.id + '">';
 	html += '<h4>' + res.path + ': ' + desc + ' <i class="icon-resize-vertical icon-4x"></i></h4></a></div>';
