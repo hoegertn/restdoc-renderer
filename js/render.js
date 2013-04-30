@@ -248,6 +248,25 @@ function createParamSection(params) {
 	return html;
 }
 
+function createOauth2Section(oauth2) {
+	var html = '<h2 id="oauth2-anchor">Oauth2</h2>';
+	html += "<p>" + oauth2.clientaccess + "</p>";
+	html += "<h4>Endpoints</h4>";
+	html += "<ul>";
+	for (var id in oauth2.endpoints) {
+		if (oauth2.endpoints.hasOwnProperty(id)) {
+			html += "<li><code>" + id + "</code>: " + oauth2.endpoints[id] + "</li>";
+		}
+	}
+	html += "<h4>Grants</h4>";
+	html += "<ul>";
+	$.each(oauth2.grants, function(i, grant) {
+		html += "<li><code>" + grant + "</code></li>";
+	});
+	html += "</ul>";
+	return html;
+}
+
 function listItem(title, text) {
 	var html = '<li><code>' + title + '</code>';
 	if (text) {
@@ -274,7 +293,12 @@ function render(file, cbBefore, contentElement, cbAfter) {
 			output += createSchemaSection(restdoc.schemas);
 			output += createHeaderSection(restdoc.headers);
 			output += createResourceSection(restdoc.resources);
-			output += createParamSection(restdoc.params);
+			if (restdoc.params) {
+				output += createParamSection(restdoc.params);
+			}
+			if (restdoc.oauth2) {
+				output += createOauth2Section(restdoc.oauth2);
+			}
 			contentElement.html(output);
 			if (typeof cbAfter === "function") {
 				cbAfter(restdoc);
