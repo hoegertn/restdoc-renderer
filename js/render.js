@@ -1,3 +1,5 @@
+var schemasByURI = {};
+
 function crateSchemaList(restdoc, appendElement) {
 	var output = "", i = 0, schemas = [];
 	for (var id in restdoc.schemas) {
@@ -25,7 +27,7 @@ function crateResourceList(restdoc, appendElement) {
 		return a.name.localeCompare(b.name);
 	});
 	$.each(resources, function(i, resource) {
-		output += "<li><a href=\"#resources-" + resource.id +"-anchor\">" + resource.name + "</a></li>";
+		output += "<li><a href=\"#resource-" + resource.id +"-anchor\">" + resource.name + "</a></li>";
 	});
 	appendElement.after(output);
 }
@@ -90,6 +92,7 @@ function createInlineSchema(schema) {
 	return html;
 }
 function createSchema(i, schemaURI, schema) {
+	schemasByURI[schemaURI] = i;
 	var html = '<div class="accordion-group" id="schema-' + i + '-anchor">' +
 		'<div class="accordion-heading">' +
 			'<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-res" href="#schema-' + i + '">' +
@@ -153,7 +156,7 @@ function createResourceSection(data) {
 function createResource(res) {
 	var desc = res.description ? res.description : 'No description';
 	
-	var html = '<div class="accordion-group" id="resources-' + res.id + '-anchor">';
+	var html = '<div class="accordion-group" id="resource-' + res.id + '-anchor">';
 	html += '<div class="accordion-heading">';
 	html += '<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-res" href="#resource-' + res.id + '">';
 	html += '<h4>' + res.path + ': ' + desc + ' <i class="icon-resize-vertical icon-4x"></i></h4></a></div>';
@@ -230,7 +233,11 @@ function createAccept(title, accepts) {
 	var html = '<h6>'+title+'</h6><ul>';
 	for (var i = 0; i < accepts.length; i++) {
 		var acc = accepts[i];
-		var schema = (acc.schema) ? 'Schema: ' + acc.schema : '';
+		var schema = '';
+		if (acc.schema) {
+
+			schema = "Schema: <a href=\"#schema-" + schemasByURI[acc.schema] + "-anchor\">" + acc.schema + "</a>";
+		}
 		html += listItem(acc.type, schema);
 	}
 	html += '</ul>';
