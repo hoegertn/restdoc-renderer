@@ -1,6 +1,6 @@
 var schemasByURI = {};
 
-function crateSchemaList(restdoc, appendElement) {
+function createSchemaList(restdoc, appendElement) {
 	var output = "", i = 0, schemas = [];
 	for (var id in restdoc.schemas) {
 		if (restdoc.schemas.hasOwnProperty(id)) {
@@ -18,7 +18,7 @@ function crateSchemaList(restdoc, appendElement) {
 	appendElement.after(output);
 }
 
-function crateResourceList(restdoc, appendElement) {
+function createResourceList(restdoc, appendElement) {
 	var output = "", resources = [];
 	$.each(restdoc.resources, function(i, resource) {
 			resources.push({"id": resource.id, "name": resource.path});
@@ -32,7 +32,7 @@ function crateResourceList(restdoc, appendElement) {
 	appendElement.after(output);
 }
 
-function crateParamList(restdoc, appendElement) {
+function createParamList(restdoc, appendElement) {
 	var output = "", i = 0, params = [];
 	for (var id in restdoc.params) {
 		if (restdoc.params.hasOwnProperty(id)) {
