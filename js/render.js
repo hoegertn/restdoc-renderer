@@ -334,8 +334,10 @@ function render(file, cbBefore, contentElement, cbAfter, type) {
 				cbAfter(restdoc);
 			}
 		},
-		"error": function (e) {
-			contentElement.html("Error loading RestDoc: " + e);
+		"error": function (jqXHR, textStatus, errorThrown) {
+			var msg = "Error loading RestDoc: <br />Error thrown:" + errorThrown + "<br/>Response text:" + jqXHR.responseText + "<br/>Status text: " + jqXHR.statusText;
+			console.log(jqXHR);
+			contentElement.html(msg);
 		},
 		"dataType": "json"
 	});
