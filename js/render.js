@@ -308,10 +308,13 @@ function listItem(title, text) {
  * @param cbBefore function(restdoc) executed before rendering happens (can be undefined)
  * @param contentElement element where the content is inserted (e. g. $("#test"))
  * @param cbAfter function(restdoc) executed after rendering happened (can be undefined)
+ * @param type the type to use at the AJAX request (default: "GET")
  */
-function render(file, cbBefore, contentElement, cbAfter) {
+function render(file, cbBefore, contentElement, cbAfter, type) {
+	type = type || "GET";
 	$.ajax({
 		"url": file,
+		"type": type,
 		"success": function (restdoc) {
 			if (typeof cbBefore === "function") {
 				cbBefore(restdoc);
