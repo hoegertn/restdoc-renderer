@@ -1,6 +1,22 @@
+/*
+   Copyright 2013 Thorsten Hoeger, Michael Wittig, Oliver Kopp
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 var schemasByURI = {};
 
-function crateSchemaList(restdoc, appendElement) {
+function createSchemaList(restdoc, appendElement) {
 	var output = "", i = 0, schemas = [];
 	for (var id in restdoc.schemas) {
 		if (restdoc.schemas.hasOwnProperty(id)) {
@@ -18,7 +34,7 @@ function crateSchemaList(restdoc, appendElement) {
 	appendElement.after(output);
 }
 
-function crateResourceList(restdoc, appendElement) {
+function createResourceList(restdoc, appendElement) {
 	var output = "", resources = [];
 	$.each(restdoc.resources, function(i, resource) {
 			resources.push({"id": resource.id, "name": resource.path});
@@ -32,7 +48,7 @@ function crateResourceList(restdoc, appendElement) {
 	appendElement.after(output);
 }
 
-function crateParamList(restdoc, appendElement) {
+function createParamList(restdoc, appendElement) {
 	var output = "", i = 0, params = [];
 	for (var id in restdoc.params) {
 		if (restdoc.params.hasOwnProperty(id)) {
@@ -308,10 +324,13 @@ function listItem(title, text) {
  * @param cbBefore function(restdoc) executed before rendering happens (can be undefined)
  * @param contentElement element where the content is inserted (e. g. $("#test"))
  * @param cbAfter function(restdoc) executed after rendering happened (can be undefined)
+ * @param type the type to use at the AJAX request (default: "OPTIONS")
  */
-function render(file, cbBefore, contentElement, cbAfter) {
+function render(file, cbBefore, contentElement, cbAfter, type) {
+	type = type || "OPTIONS";
 	$.ajax({
 		"url": file,
+		"type": type,
 		"success": function (restdoc) {
 			if (typeof cbBefore === "function") {
 				cbBefore(restdoc);
@@ -331,8 +350,10 @@ function render(file, cbBefore, contentElement, cbAfter) {
 				cbAfter(restdoc);
 			}
 		},
-		"error": function (e) {
-			contentElement.html("Error loading RestDoc: " + e);
+		"error": function (jqXHR, textStatus, errorThrown) {
+			var msg = "Error loading RestDoc: <br />Error thrown:" + errorThrown + "<br/>Response text:" + jqXHR.responseText + "<br/>Status text: " + jqXHR.statusText;
+			console.log(jqXHR);
+			contentElement.html(msg);
 		},
 		"dataType": "json"
 	});
