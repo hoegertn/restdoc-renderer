@@ -1,7 +1,7 @@
 restdoc-renderer
 ================
 
-Renderer for RestDoc specifications.
+Renderer for [RestDoc] REST API specifications.
 
 Can be loaded as [requirejs] module with the name `restdoc-render`.
 
@@ -22,3 +22,4 @@ Licensed under [Apache License, Version 2.0]
 
   [Apache License, Version 2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
   [requirejs]: http://requirejs.org/
+  [RestDoc]: http://restdoc.org/
