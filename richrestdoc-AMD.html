@@ -5,7 +5,24 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css" rel="stylesheet">
 		<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
-		<title>RestDoc Rich Rendering Demo</title>
+		<script src="http://requirejs.org/docs/release/2.1.9/minified/require.js"></script>
+		<script>
+			require.config({
+				baseUrl: "js",
+				paths: {
+					"jquery": "http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min",
+					"bootstrap": "http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap",
+					"bootstrap-collapse": "http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap-collapse",
+					"mustache": "http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min"
+				},
+				// make bootstrap requirejs compatible
+				shim: {
+					'bootstrap' : ['jquery'],
+					'bootstrap-collapse' : ['bootstrap', 'jquery']
+				}
+			});
+		</script>
+		<title>RestDoc Rich Rendering Demo (AMD version)</title>
 	</head>
 	<body>
 		<div class="navbar navbar-fixed-bottom">
@@ -50,14 +67,9 @@
 			</footer>
 		</div>
 
-		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.js"></script>
-		<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap-collapse.js"></script>
-		<script src="js/restdoc-render.js" type="text/javascript"></script>
 		<script type="text/javascript">
-			$(function() {
+			// "bootstrap", "bootstrap-collapse", and "mustache" have to be loaded additionally to enable advanced functionality of the renderer
+			require(["restdoc-render", "bootstrap", "bootstrap-collapse", "mustache"], function(renderer) {
 				renderer.render("test.json", undefined, $("#rendered"), function(restdoc) {
 					renderer.createSchemaList(restdoc, $("#schemaList"));
 					renderer.createResourceList(restdoc, $("#resourceList"));
